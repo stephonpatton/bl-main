@@ -5,6 +5,7 @@ import TodoItem from "./components/TodoItem";
 import './App.css'
 import './header.css'
 
+
 class App extends Component {
   state = {
     todos: [{
@@ -15,7 +16,7 @@ class App extends Component {
       {
         id: 2,
         title: 'Dinner with wife',
-        completed: true
+        completed: false
       },
       {
         id: 3,
@@ -35,6 +36,7 @@ class App extends Component {
       return todo;
       })})
   };
+
 
   delTodo =(id) => {
     this.setState({todos: [...this.state.todos.filter(todo => todo.id !== id)]})
