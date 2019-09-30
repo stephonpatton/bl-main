@@ -1,45 +1,60 @@
 import React, {useState, useEffect} from 'react';
 import axios from 'axios';
+import { async } from 'q';
+import Recipe from './Recipe';
 
-var request = new XMLHttpRequest();
-var path = "https://fortnite-api.theapinetwork.com/upcoming/get";
-request.open("GET", path, true);
-request.setRequestHeader('Origin', 'http://127.0.0.1:3000');
+const About = () => {
 
-function About() {
+    // const proxy = 'https://cors-anywhere.herokuapp.com/';
+    // const api = `${proxy}https://fortnite-api.theapinetwork.com/upcoming/get`;
+
+    const APP_ID = "1de9d3ad";
+    const APP_KEY = "0e3df22ff1ba6f051bd614407348b3c0";
+
+    const [recipes, setRecipes] = useState([]);
+    const [search, setSearch] = useState('');
+    const [query, setQuery] = useState('chicken');
+
     useEffect(() => {
-        fetchItems();
-    },[]);
-    const[items, setItems] = useState([]);
+        getRecipes();
+    }, [query]); //[] only runs once (when app mounts)
 
 
-    const fetchItems = async () => {
-        const data = await fetch('');
-        // const data = axios.get('https://fortnite-api.theapinetwork.com/upcoming/get');
-        const items = await data.json();
+    const getRecipes = async () => {
+        const response = await fetch(`https://api.edamam.com/search?q=${query}&app_id=${APP_ID}&app_key=${APP_KEY}&from=0&to=3&calories=591-722&health=alcohol-free`);
+        const data = await response.json();
+        setRecipes(data.hits);
+        
+    }
+    const updateSearch = e => {
+        setSearch(e.target.value);
+    }
 
-
-        console.log(items.items);
-        setItems(items.items);
-    };
-
-    setItems.use(function(req, res, next) {
-        res.header("Access-Control-Allow-Origin", "*");
-        res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-        next();
-    });
-
-    
+    const getSearch = e => {
+        e.preventDefault();
+        setQuery(search);
+        setSearch('');
+    }
 
     return (
         <React.Fragment>
-           <div>
-               {items.map(item => (
-                   <h1>{item.name}</h1>
-               ))}
-           </div>
-        </React.Fragment>
-    );
-}
+          <div>
+              <form onSubmit={getSearch} className="search-form">
+                  <input className = "search-bar" type="text" value = {search} onChange={updateSearch}/>
+                  <button className = "search-button" type="submit">Search</button>
+              </form>
+              {recipes.map(recipe => (
+                  <Recipe 
+                  key = {recipe.recipe.label} 
+                  title = {recipe.recipe.label} 
+                  calories = {recipe.recipe.calories} 
+                  image = {recipe.recipe.image}
+                  ingredients = {recipe.recipe.ingredients}
+                  />
+              ))}
+         </div>
+       </React.Fragment>
+      );
+};
 
 export default About;
