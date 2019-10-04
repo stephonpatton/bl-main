@@ -14,6 +14,10 @@ const Recipe = ({title, calories, image, ingredients}) => {
             <img src={image} alt=""/>
         </div>
     );
+
+    
 }
+
+
 
 export default Recipe;
